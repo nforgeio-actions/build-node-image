@@ -13,7 +13,7 @@
 # NOTE: You must run the [setup-node] action before this to ensure that
 #       Node.js is configured on the runner.
 
-name: clean
+name: build-node-images
 description: "Clears the runner state including the GITHUB_WORKSPACE directory"
 runs:
   using: node12
