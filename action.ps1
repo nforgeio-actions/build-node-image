@@ -26,9 +26,9 @@ if ([System.String]::IsNullOrEmpty($ncRoot) -or ![System.IO.Directory]::Exists($
 
 $ncPowershell = [System.IO.Path]::Combine($ncRoot, "Powershell")
 
-Push-Location $ncPowershell
+Push-Location $ncPowershell | Out-Null
 . ./includes.ps1
-Pop-Location
+Pop-Location | Out-Null
 
 # Fetch the inputs
 
@@ -99,7 +99,7 @@ try
 
     # Discard any neonCLOUD commits and then checkout the requested commit
 
-    Push-Cwd $ncRoot
+    Push-Cwd $ncRoot | Out-Null
 
         git reset --quiet --hard
         ThrowOnExitCode
@@ -110,7 +110,7 @@ try
         git checkout --quiet --detach $buildCommit
         ThrowOnExitCode
 
-    Pop-Cwd
+    Pop-Cwd | Out-Null
 
     #--------------------------------------------------------------------------
     # Build neonCLOUD (including tools) so we can use the [neon-image] tool
@@ -154,7 +154,7 @@ catch
 
     # Discard any neonCLOUD commits and checkout master 
 
-    Push-Cwd $ncRoot
+    Push-Cwd $ncRoot | Out-Null
 
         git reset --quiet --hard
         ThrowOnExitCode
@@ -168,7 +168,7 @@ catch
         git pull --quiet
         ThrowOnExitCode
 
-    Pop-Cwd
+    Pop-Cwd | Out-Null
 
     exit 1
 }

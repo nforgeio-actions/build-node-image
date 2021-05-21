@@ -28,7 +28,7 @@ inputs:
   build-log:
     description: "Specifies the build log file name"
     required: true
-  
+    default: image-build.log
 outputs:
   success: 
     description: "Returns 'true' on success or 'false' on failure"
