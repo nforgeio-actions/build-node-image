@@ -72,8 +72,8 @@ try
         "hyperv"
         {
             $nodeAddressOption  = "--node-address=$vmIP"
-            $hostAccountOption  = "--host-account="  + $(Get-SecretValue "xenserver[username]")
-            $hostPasswordOption = "--host-password=" + $(Get-SecretValue "xenserver[password]")
+            $hostAccountOption  = "--host-account="  + $(Get-SecretValue "xenserver[username]" "group-devops")
+            $hostPasswordOption = "--host-password=" + $(Get-SecretValue "xenserver[password]" "group-devops")
         }
 
         "xenserver"
