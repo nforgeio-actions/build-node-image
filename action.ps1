@@ -38,9 +38,6 @@ $buildCommit  = Get-ActionInput "build-commit"   $true
 $buildLogName = Get-ActionInput "build-log"      $true
 $buildLogPath = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
 
-$env:GITHUB_WORKSPACE = "C:\Temp\NodeImage"
-#-------------------------------
-
 # Initialize the outputs
 
 Set-ActionOutput "success"   "true"
