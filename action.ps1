@@ -127,6 +127,26 @@ try
     ThrowOnExitCode
 
     #--------------------------------------------------------------------------
+    # We need to do a partial build of the neonKUBE setup containers so that the
+    # [.version] files will be initialized by passing the [-nobuild] option.  This
+    # prevents the script from actually building and publishing the containers
+    # which is very slow and has already been completed by a previous workflow run.
+    #
+    # Note that this works because we've checked out neonCLOUD at the same commit
+    # where the containers where fully built.
+
+    Write-Output ""                                                            >> $buildLogPath
+    Write-Output "===========================================================" >> $buildLogPath
+    Write-Output "Initializing setup container images"                         >> $buildLogPath
+    Write-Output "===========================================================" >> $buildLogPath
+    Write-Output ""                                                            >> $buildLogPath
+
+    $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
+
+    pwsh $buildScript -setup -nobuild 2>&1 >> $buildLogPath
+    ThrowOnExitCode
+
+    #--------------------------------------------------------------------------
     # Build and publish the requested node image
 
     Write-Output ""                                                            >> $buildLogPath
@@ -135,14 +155,14 @@ try
     Write-Output "===========================================================" >> $buildLogPath
     Write-Output ""                                                            >> $buildLogPath
 
-    $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
-
-    # Remove any locally cached images
+    # Remove any locally cached node images
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave
     Write-Output $result.stdout >> $buildLogPath
 
     # Prepare the node image for the target environment
+
+    $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption" -interleave
     Write-Output $result.stdout >> $buildLogPath
