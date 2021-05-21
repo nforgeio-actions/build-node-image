@@ -8,13 +8,32 @@
 # formal written and signed agreement with neonFORGE, LLC.
 
 #------------------------------------------------------------------------------
-# Clears the runner state including the GITHUB_WORKSPACE directory.
+# Builds neonKUBE node images for a target environment.
 #
 # NOTE: You must run the [setup-node] action before this to ensure that
 #       Node.js is configured on the runner.
 
-name: build-node-images
-description: "Clears the runner state including the GITHUB_WORKSPACE directory"
+name: node-image-builder
+description: "Builds neonKUBE node images for a target environment"
+inputs:
+  host-type:
+    description: "Specifies the target environment (wsl2 hyperv xenserver aws azure)"
+    required: true
+  base-image-uri:
+    description: "Specifies the base image URI"
+    required: true
+  build-commit:
+    description: "Specifies the neonCLOUD commit to build from"
+    required: true
+  build-log:
+    description: "Specifies the build log file name"
+    required: true
+  
+outputs:
+  success: 
+    description: "Returns 'true' on success or 'false' on failure"
+  build-log:
+    description: "Returns as the local path to the build log"
 runs:
   using: node12
   main: action.js
