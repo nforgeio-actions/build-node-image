@@ -47,6 +47,11 @@ Set-ActionOutput "build-log" $buildLogPath
 
 try
 {
+    # We're going to use the [reserved.ip0] address from the neon-assistant
+    # profile for the node VM address (if we need to deploy a VM for the operation).
+
+    $vmIP = Get-ProfileValue "reserved.ip0"
+
     # Validate the target host type and configure the node-image command options
 
     $targetFolder       = $env:GITHUB_WORKSPACE
@@ -66,12 +71,14 @@ try
 
         "hyperv"
         {
-            $nodeAddressOption = "--node-address=10.0.1.10"     # <-- $todo(jefflill): needs to be read from neon-assistant profile
+            $nodeAddressOption  = "--node-address=$vmIP"
+            $hostAccountOption  = "--host-account="  + $(Get-SecretValue "xenserver[username]")
+            $hostPasswordOption = "--host-password=" + $(Get-SecretValue "xenserver[password]")
         }
 
         "xenserver"
         {
-            throw "Not implemented"
+            $nodeAddressOption = "--node-address=$vmIP"
         }
 
         "aws"
