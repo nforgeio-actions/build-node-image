@@ -55,8 +55,7 @@ try
     # Validate the target host type and configure the node-image command options
 
     $targetFolder       = $env:GITHUB_WORKSPACE
-    # $publishOption      = "--publish"
-    $publishOption      = "--no-containers"
+    $publishOption      = "--publish"
     $hostAddressOption  = ""
     $hostAccountOption  = ""
     $hostPasswordOption = ""
@@ -155,14 +154,14 @@ try
     Write-Output "===========================================================" >> $buildLogPath
     Write-Output ""                                                            >> $buildLogPath
 
+    $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
+
     # Remove any locally cached node images
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave
     Write-Output $result.stdout >> $buildLogPath
 
     # Prepare the node image for the target environment
-
-    $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption" -interleave
     Write-Output $result.stdout >> $buildLogPath
