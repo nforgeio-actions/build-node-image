@@ -120,10 +120,10 @@ try
     Write-Output "===========================================================" >> $buildLogPath
     Write-Output ""                                                            >> $buildLogPath
 
-    $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
+    # $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
 
-    pwsh $buildScript -tools 2>&1 >> $buildLogPath
-    ThrowOnExitCode
+    # pwsh $buildScript -tools 2>&1 >> $buildLogPath
+    # ThrowOnExitCode
 
     #--------------------------------------------------------------------------
     # We need to do a partial build of the neonKUBE setup containers so that the
@@ -134,16 +134,16 @@ try
     # Note that this works because we've checked out neonCLOUD at the same commit
     # where the containers where fully built.
 
-    Write-Output ""                                                            >> $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output "Initializing setup container images"                         >> $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output ""                                                            >> $buildLogPath
+    # Write-Output ""                                                            >> $buildLogPath
+    # Write-Output "===========================================================" >> $buildLogPath
+    # Write-Output "Initializing setup container images"                         >> $buildLogPath
+    # Write-Output "===========================================================" >> $buildLogPath
+    # Write-Output ""                                                            >> $buildLogPath
 
-    $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
+    # $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
 
-    pwsh $buildScript -setup -nobuild 2>&1 >> $buildLogPath
-    ThrowOnExitCode
+    # pwsh $buildScript -setup -nobuild 2>&1 >> $buildLogPath
+    # ThrowOnExitCode
 
     #--------------------------------------------------------------------------
     # Build and publish the requested node image
