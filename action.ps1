@@ -123,7 +123,7 @@ try
 
     $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
 
-    pwsh $buildScript -tools 2>&1 >> $buildLogPath
+    pwsh -NonInteractive -File $buildScript -tools 2>&1 >> $buildLogPath
     ThrowOnExitCode
 
     #--------------------------------------------------------------------------
@@ -143,7 +143,7 @@ try
 
     $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
 
-    pwsh $buildScript -setup -nobuild 2>&1 >> $buildLogPath
+    pwsh -NonInteractive -File $buildScript -setup -nobuild 2>&1 >> $buildLogPath
     ThrowOnExitCode
 
     #--------------------------------------------------------------------------
