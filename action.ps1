@@ -115,15 +115,15 @@ try
     #--------------------------------------------------------------------------
     # Build neonCLOUD (including tools) so we can use the [neon-image] tool
 
-    Write-Output ""                                                             > $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output "Building neonCLOUD (with tools)"                             >> $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output ""                                                            >> $buildLogPath
+    Write-Output ""                                                             *> $buildLogPath
+    Write-Output "===========================================================" *>> $buildLogPath
+    Write-Output "Building neonCLOUD (with tools)"                             *>> $buildLogPath
+    Write-Output "===========================================================" *>> $buildLogPath
+    Write-Output ""                                                            *>> $buildLogPath
 
     $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
 
-    pwsh-File $buildScript -NonInteractive  -tools 2>&1 >> $buildLogPath
+    pwsh-File $buildScript -NonInteractive  -tools *>> $buildLogPath
     ThrowOnExitCode
 
     #--------------------------------------------------------------------------
@@ -135,37 +135,37 @@ try
     # Note that this works because we've checked out neonCLOUD at the same commit
     # where the containers where fully built.
 
-    Write-Output ""                                                            >> $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output "Initializing setup container images"                         >> $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output ""                                                            >> $buildLogPath
+    Write-Output ""                                                            *>> $buildLogPath
+    Write-Output "===========================================================" *>> $buildLogPath
+    Write-Output "Initializing setup container images"                         *>> $buildLogPath
+    Write-Output "===========================================================" *>> $buildLogPath
+    Write-Output ""                                                            *>> $buildLogPath
 
     $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
 
-    pwsh -File $buildScript -NonInteractive -setup -nobuild 2>&1 >> $buildLogPath
+    pwsh -File $buildScript -NonInteractive -setup -nobuild *>> $buildLogPath
     ThrowOnExitCode
 
     #--------------------------------------------------------------------------
     # Build and publish the requested node image
 
-    Write-Output ""                                                            >> $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output "Building [$hostType] node image"                             >> $buildLogPath
-    Write-Output "===========================================================" >> $buildLogPath
-    Write-Output ""                                                            >> $buildLogPath
+    Write-Output ""                                                            *>> $buildLogPath
+    Write-Output "===========================================================" *>> $buildLogPath
+    Write-Output "Building [$hostType] node image"                             *>> $buildLogPath
+    Write-Output "===========================================================" *>> $buildLogPath
+    Write-Output ""                                                            *>> $buildLogPath
 
     $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
 
     # Remove any locally cached node images
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave
-    Write-Output $result.stdout >> $buildLogPath
+    Write-Output $result.stdout *>> $buildLogPath
 
     # Prepare the node image for the target environment
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption" -interleave
-    Write-Output $result.stdout >> $buildLogPath
+    Write-Output $result.stdout *>> $buildLogPath
 }
 catch
 {
