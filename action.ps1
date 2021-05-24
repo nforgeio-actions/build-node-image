@@ -36,6 +36,8 @@ $hostType     = Get-ActionInput "host-type"      $true
 $baseImageUri = Get-ActionInput "base-image-uri" $true
 $buildCommit  = Get-ActionInput "build-commit"   $true
 $buildLogName = Get-ActionInput "build-log"      $true
+$noContainers = Get-ActionInput "no-containers"  $false
+
 $buildLogPath = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
 
 # Initialize the outputs
@@ -54,8 +56,17 @@ try
 
     # Validate the target host type and configure the node-image command options
 
-    $targetFolder       = $env:GITHUB_WORKSPACE
-    $publishOption      = "--publish"
+    $targetFolder = $env:GITHUB_WORKSPACE
+
+    if ($noContainers)
+    {
+        $publishOption = "--no-containers"
+    }
+    else
+    {
+        $publishOption = "--publish"
+    }
+
     $hostAddressOption  = ""
     $hostAccountOption  = ""
     $hostPasswordOption = ""

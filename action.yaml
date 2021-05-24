@@ -29,6 +29,10 @@ inputs:
     description: "Specifies the build log file name"
     required: true
     default: image-build.log
+  no-containers:
+    description: "Optionally disable loading of container images for action debugging"
+    required: false
+    default: "false"
 outputs:
   success: 
     description: "Returns 'true' on success or 'false' on failure"
