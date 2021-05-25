@@ -32,12 +32,12 @@ Pop-Location | Out-Null
 
 # Fetch the inputs
 
-$hostType     = Get-ActionInput "host-type"      $true
-$baseImageUri = Get-ActionInput "base-image-uri" $true
-$buildCommit  = Get-ActionInput "build-commit"   $true
-$buildLogName = Get-ActionInput "build-log"      $true
-$noContainers = Get-ActionInput "no-containers"  $false
-$parallelism  = Get-ActionInput "parallelism"    $true
+$hostType     = Get-ActionInput      "host-type"      $true
+$baseImageUri = Get-ActionInput      "base-image-uri" $true
+$buildCommit  = Get-ActionInput      "build-commit"   $true
+$buildLogName = Get-ActionInput      "build-log"      $true
+$noContainers = Get-ActionInputBool  "no-containers"  $true
+$parallelism  = Get-ActionInputInt32 "parallelism"    $true
 
 $buildLogPath = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
 
