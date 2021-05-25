@@ -37,6 +37,7 @@ $baseImageUri = Get-ActionInput "base-image-uri" $true
 $buildCommit  = Get-ActionInput "build-commit"   $true
 $buildLogName = Get-ActionInput "build-log"      $true
 $noContainers = Get-ActionInput "no-containers"  $false
+$parallelism  = Get-ActionInput "parallelism"    $true
 
 $buildLogPath = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
 
@@ -72,6 +73,7 @@ try
     $hostPasswordOption = ""
     $nodeAddressOption  = ""
     $nodeNameOption     = ""
+    $parallelismOption  = "--parallelism=$parallelism"
 
     Switch ($hostType)
     {
@@ -175,7 +177,7 @@ try
 
     # Prepare the node image for the target environment
 
-    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption" -interleave
+    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption" -interleave
     Write-Output $result.stdout >> $buildLogPath
 }
 catch

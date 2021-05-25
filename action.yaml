@@ -33,6 +33,10 @@ inputs:
     description: "Optionally disable loading of container images for action debugging"
     required: false
     default: "false"
+  parallelism:
+    description: "Optionally specifies the parallelism when adding container images"
+    required: false
+    default: "1"
 outputs:
   success: 
     description: "Returns 'true' on success or 'false' on failure"
