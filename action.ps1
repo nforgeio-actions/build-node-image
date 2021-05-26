@@ -8,7 +8,7 @@
 # divulged or used for any purpose by other organizations or individuals without a
 # formal written and signed agreement with neonFORGE, LLC.
 
-# Verify that we're running on a properly configured neonFORGE jobrunner 
+# Verify that we're running on a properly configured neonFORGE GitHub runner 
 # and import the deployment and action scripts from neonCLOUD.
 
 # NOTE: This assumes that the required [$NC_ROOT/Powershell/*.ps1] files
