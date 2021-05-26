@@ -128,7 +128,7 @@ try
     #--------------------------------------------------------------------------
     # Build neonCLOUD (including tools) so we can use the [neon-image] tool
 
-    Write-Info ""                                                             6>&1 2>&1 > $buildLogPath
+    Write-Info ""                                                            6>&1 2>&1  > $buildLogPath
     Write-Info "===========================================================" 6>&1 2>&1 >> $buildLogPath
     Write-Info "Building neonCLOUD (with tools)"                             6>&1 2>&1 >> $buildLogPath
     Write-Info "===========================================================" 6>&1 2>&1 >> $buildLogPath
