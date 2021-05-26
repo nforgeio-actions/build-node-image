@@ -109,6 +109,7 @@ try
             throw "Unknown build target: $hostType"
         }
     }
+Log-DebugLine "*** build-node-image: 0"
 
     # Discard any neonCLOUD commits and then checkout the requested commit
 
@@ -124,6 +125,7 @@ try
         ThrowOnExitCode
 
     Pop-Cwd | Out-Null
+Log-DebugLine "*** build-node-image: 1"
 
     #--------------------------------------------------------------------------
     # Build neonCLOUD (including tools) so we can use the [neon-image] tool
@@ -133,11 +135,15 @@ try
     Write-Info "Building neonCLOUD (with tools)"                             6>&1 2>&1 >> $buildLogPath
     Write-Info "===========================================================" 6>&1 2>&1 >> $buildLogPath
     Write-Info ""                                                            6>&1 2>&1 >> $buildLogPath
+Log-DebugLine "*** build-node-image: 2"
 
     $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
+Log-DebugLine "*** build-node-image: 3"
 
     pwsh -File $buildScript -NonInteractive -tools 6>&1 2>&1 >> $buildLogPath
+Log-DebugLine "*** build-node-image: 4"
     ThrowOnExitCode
+Log-DebugLine "*** build-node-image: 5"
 
     #--------------------------------------------------------------------------
     # We need to do a partial build of the neonKUBE setup containers so that the
@@ -153,11 +159,14 @@ try
     Write-Info "Initializing setup container images"                         6>&1 2>&1 >> $buildLogPath
     Write-Info "===========================================================" 6>&1 2>&1 >> $buildLogPath
     Write-Info ""                                                            6>&1 2>&1 >> $buildLogPath
+Log-DebugLine "*** build-node-image: 6"
 
     $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
 
     pwsh -File $buildScript -NonInteractive -setup -nobuild 6>&1 2>&1 >> $buildLogPath
+Log-DebugLine "*** build-node-image: 7"
     ThrowOnExitCode
+Log-DebugLine "*** build-node-image: 8"
 
     #--------------------------------------------------------------------------
     # Build and publish the requested node image
@@ -173,15 +182,21 @@ try
     # Remove any locally cached node images
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave
+Log-DebugLine "*** build-node-image: 9"
     Write-Output $result.stdout >> $buildLogPath
+Log-DebugLine "*** build-node-image: 10"
 
     # Prepare the node image for the target environment
 
+Log-DebugLine "*** build-node-image: 11"
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption" -interleave
+Log-DebugLine "*** build-node-image: 12"
     Write-Output $result.stdout >> $buildLogPath
+Log-DebugLine "*** build-node-image: 13"
 }
 catch
 {
+Log-DebugLine "*** build-node-image: 14"
     Write-ActionException $_
     Set-ActionOutput "success" "false"
 
