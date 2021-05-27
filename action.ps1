@@ -99,8 +99,8 @@ try
 
             $xenCredentialsName  = Get-ProfileValue "xen.credentials.name"
             $xenCredentialsVault = Get-ProfileValue "xen.credentials.vault"
-            $xenHostUsername     = Get-SecretValue "$xenCredentialsName[username]"
-            $xenHostPassword     = Get-SecretValue "$xenCredentialsName[password]"
+            $xenHostUsername     = Get-SecretValue  "$xenCredentialsName[username]" $xenCredentialsVault
+            $xenHostPassword     = Get-SecretValue  "$xenCredentialsName[password]" $xenCredentialsVault
             $xenOwner            = Get-ProfileValue "owner"
 
             $hostAddressOption   = "--host-address=$xenHostAddress"
