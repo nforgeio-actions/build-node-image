@@ -88,10 +88,30 @@ try
 
         "xenserver"
         {
-            $nodeAddressOption  = "--node-address=$vmIP"
-            $hostAddressOption  = "--host-address="  + $(Get-ProfileValue "xen-00.ip")
-            $hostAccountOption  = "--host-account="  + $(Get-SecretValue "xenserver[username]" "group-devops")
-            $hostPasswordOption = "--host-password=" + $(Get-SecretValue "xenserver[password]" "group-devops")
+            $nodeAddressOption = "--node-address=$vmIP"
+
+            # We'll load the target XenServer/XCP-ng host address from the neon-assistant profile.
+            #
+            # We'll also load the name and vault for the [root] password from the profile and then
+            # use that to obtain the actual password for the host.
+
+            $xenHostAddress      = Get-ProfileValue "xen.host.ip"
+
+            $xenCredentialsName  = Get-ProfileValue "xen.credentials.name"
+            $xenCredentialsVault = Get-ProfileValue "xen.credentials.vault"
+            $xenHostUsername     = Get-SecretValue "$xenCredentialsName[username]"
+            $xenHostPassword     = Get-SecretValue "$xenCredentialsName[password]"
+            $xenOwner            = Get-ProfileValue "owner"
+
+            $hostAddressOption   = "--host-address=$xenHostAddress"
+            $hostAccountOption   = "--host-account=$xenHostUsername"
+            $hostPasswordOption  = "--host-password=$xenHostPassword"
+
+            # Connect to the XenServer host and remove all VMs whose names start with the owner 
+            # prefix specified in the profile.  Each runner is expected to have a unique owner
+            # assigned to avoid conflicts with other runners.
+
+            Remove-XenServerVMs $xenHostAddress $xenHostUsername $xenHostPassword "$xenOwner-*"
         }
 
         "aws"
@@ -128,11 +148,11 @@ try
     #--------------------------------------------------------------------------
     # Build neonCLOUD (including tools) so we can use the [neon-image] tool
 
-    Write-Host ""                                                            6>&1 2>&1  > $buildLogPath
-    Write-Host "===========================================================" 6>&1 2>&1 >> $buildLogPath
-    Write-Host "Building neonCLOUD (with tools)"                             6>&1 2>&1 >> $buildLogPath
-    Write-Host "===========================================================" 6>&1 2>&1 >> $buildLogPath
-    Write-Host ""                                                            6>&1 2>&1 >> $buildLogPath
+    Write-Host ""                                                                                6>&1 2>&1  > $buildLogPath
+    Write-Host "===============================================================================" 6>&1 2>&1 >> $buildLogPath
+    Write-Host "Building neonCLOUD (with tools)"                                                 6>&1 2>&1 >> $buildLogPath
+    Write-Host "===============================================================================" 6>&1 2>&1 >> $buildLogPath
+    Write-Host ""                                                                                6>&1 2>&1 >> $buildLogPath
 
     $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
 
@@ -148,11 +168,11 @@ try
     # Note that this works because we've checked out neonCLOUD at the same commit
     # where the containers where fully built.
 
-    Write-Host ""                                                            6>&1 2>&1 >> $buildLogPath
-    Write-Host "===========================================================" 6>&1 2>&1 >> $buildLogPath
-    Write-Host "Initializing setup container images"                         6>&1 2>&1 >> $buildLogPath
-    Write-Host "===========================================================" 6>&1 2>&1 >> $buildLogPath
-    Write-Host ""                                                            6>&1 2>&1 >> $buildLogPath
+    Write-Host ""                                                                                6>&1 2>&1 >> $buildLogPath
+    Write-Host "===============================================================================" 6>&1 2>&1 >> $buildLogPath
+    Write-Host "Initializing setup container images"                                             6>&1 2>&1 >> $buildLogPath
+    Write-Host "===============================================================================" 6>&1 2>&1 >> $buildLogPath
+    Write-Host ""                                                                                6>&1 2>&1 >> $buildLogPath
 
     $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
 
@@ -162,11 +182,11 @@ try
     #--------------------------------------------------------------------------
     # Build and publish the requested node image
 
-    Write-Host ""                                                            6>&1 2>&1 >> $buildLogPath
-    Write-Host "===========================================================" 6>&1 2>&1 >> $buildLogPath
-    Write-Host "Building [$hostType] node image"                             6>&1 2>&1 >> $buildLogPath
-    Write-Host "===========================================================" 6>&1 2>&1 >> $buildLogPath
-    Write-Host ""                                                            6>&1 2>&1 >> $buildLogPath
+    Write-Host ""                                                                                6>&1 2>&1 >> $buildLogPath
+    Write-Host "===============================================================================" 6>&1 2>&1 >> $buildLogPath
+    Write-Host "Building [$hostType] node image"                                                 6>&1 2>&1 >> $buildLogPath
+    Write-Host "===============================================================================" 6>&1 2>&1 >> $buildLogPath
+    Write-Host ""                                                                                6>&1 2>&1 >> $buildLogPath
 
     $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
 
