@@ -209,17 +209,10 @@ catch
 
     Push-Cwd $ncRoot | Out-Null
 
-        git reset --quiet --hard
-        ThrowOnExitCode
-    
-        git fetch --quiet
-        ThrowOnExitCode
-
-        git checkout --quiet master
-        ThrowOnExitCode
-    
-        git pull --quiet
-        ThrowOnExitCode
+        Invoke-CaptureStreams "git reset --quiet --hard"
+        Invoke-CaptureStreams "git fetch --quiet"
+        Invoke-CaptureStreams "git checkout --quiet master"        
+        Invoke-CaptureStreams "git pull --quiet"
 
     Pop-Cwd | Out-Null
 }
