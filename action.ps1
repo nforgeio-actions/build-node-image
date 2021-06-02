@@ -198,7 +198,6 @@ try
     # Prepare the node image for the target environment
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption" -interleave
-    Write-Output $result.stdout >> $buildLogPath
 }
 catch
 {
