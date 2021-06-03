@@ -193,12 +193,20 @@ try
     # Remove any locally cached node images
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave
-    Write-Output $result.stdout >> $buildLogPath
+
+    if ($result.exitcode -ne 0)
+    {
+        Write-Output $result.stdout >> $buildLogPath
+    }
 
     # Prepare the node image for the target environment
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption" -interleave
-    Write-Output $result.stdout >> $buildLogPath
+
+    if ($result.exitcode -ne 0)
+    {
+        Write-Output $result.stdout >> $buildLogPath
+    }
 }
 catch
 {
