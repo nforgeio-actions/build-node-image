@@ -32,14 +32,18 @@ Pop-Location | Out-Null
 
 # Fetch the inputs
 
-$hostType     = Get-ActionInput      "host-type"      $true
-$baseImageUri = Get-ActionInput      "base-image-uri" $true
-$buildCommit  = Get-ActionInput      "build-commit"   $true
-$buildLogName = Get-ActionInput      "build-log"      $true
-$noContainers = Get-ActionInputBool  "no-containers"  $true
-$parallelism  = Get-ActionInputInt32 "parallelism"    $true
+$hostType       = Get-ActionInput      "host-type"       $true
+$baseImageUri   = Get-ActionInput      "base-image-uri"  $true
+$buildCommit    = Get-ActionInput      "build-commit"    $true
+$buildLogName   = Get-ActionInput      "build-log"       $true
+$noContainers   = Get-ActionInputBool  "no-containers"   $true
+$parallelism    = Get-ActionInputInt32 "parallelism"     $true
+$publishOptions = Get-ActionInput      "publish-options" $true
 
-$buildLogPath = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
+$publishAws     = $publishOptions.Contains("aws")
+$publishGitHub  = $publishOptions.Contains("github")
+
+$buildLogPath   = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
 
 # Initialize the outputs
 
@@ -74,6 +78,20 @@ try
     $nodeAddressOption  = ""
     $nodeNameOption     = ""
     $parallelismOption  = "--parallelism=$parallelism"
+    
+    $publishAwsOption   = ""
+
+    if ($publishAws)
+    {
+        $publishAwsOption = "--publish-aws"
+    }
+    
+    $publishGitHubOption   = ""
+
+    if ($publishGitHub)
+    {
+        $publishGitHubOption = "--publish-github"
+    }
 
     Switch ($hostType)
     {
@@ -201,7 +219,7 @@ try
 
     # Prepare the node image for the target environment
 
-    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption" -interleave
+    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption $publishAwsOption $publishGitHubOption" -interleave
 
     if ($result.exitcode -ne 0)
     {

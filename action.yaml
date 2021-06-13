@@ -37,6 +37,10 @@ inputs:
     description: "Optionally specifies the parallelism when adding container images"
     required: false
     default: "1"
+  publish-options:
+    description: "Specifies the image publication options (none aws github)"
+    required: false
+    default: "none"
 outputs:
   success: 
     description: "Returns 'true' on success or 'false' on failure"
