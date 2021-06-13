@@ -42,6 +42,7 @@ $publishOptions = Get-ActionInput      "publish-options" $true
 
 $publishAws     = $publishOptions.Contains("aws")
 $publishGitHub  = $publishOptions.Contains("github")
+$publishPublic  = $publishOptions.Contains("public")
 
 $buildLogPath   = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
 
@@ -91,6 +92,13 @@ try
     if ($publishGitHub)
     {
         $publishGitHubOption = "--publish-github"
+    }
+
+    $publishPublicOption = ""
+
+    if ($publishPublic)
+    {
+        $publishPublicOption = "--publish-public"
     }
 
     Switch ($hostType)
@@ -219,7 +227,7 @@ try
 
     # Prepare the node image for the target environment
 
-    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption $publishAwsOption $publishGitHubOption" -interleave
+    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption $publishAwsOption $publishGitHubOption $publishPublicOption" -interleave
 
     if ($result.exitcode -ne 0)
     {

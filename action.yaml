@@ -38,7 +38,7 @@ inputs:
     required: false
     default: "1"
   publish-options:
-    description: "Specifies the image publication options (none aws github)"
+    description: "Specifies the image publication options (none aws github public)"
     required: false
     default: "none"
 outputs:
