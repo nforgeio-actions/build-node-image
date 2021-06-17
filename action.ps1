@@ -183,15 +183,21 @@ try
     # Build neonCLOUD (including tools) so we can use the [neon-image] tool
 
     Write-Info ""                                                                                 > $buildLogPath 2>&1
-    Write-Info "===============================================================================" >> $buildLogPath 2>&1
-    Write-Info "Building neonCLOUD (with tools)"                                                 >> $buildLogPath 2>&1
-    Write-Info "===============================================================================" >> $buildLogPath 2>&1
+    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Info " Building neonCLOUD (with tools)"                                                >> $buildLogPath 2>&1
+    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
     Write-Info ""                                                                                >> $buildLogPath 2>&1
 
     $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
 
-    pwsh -File $buildScript -NonInteractive -tools >> $buildLogPath 2>&1
-    ThrowOnExitCode
+    $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -tools" -interleave -nocheck
+
+    Write-Output $result.stdout >> $buildLogPath
+
+    if ($result.exitcode -ne 0)
+    {
+        throw "Build neonCLOUD failed."
+    }
 
     #--------------------------------------------------------------------------
     # We need to do a partial build of the neonKUBE setup containers so that the
@@ -203,34 +209,40 @@ try
     # where the containers where fully built.
 
     Write-Info ""                                                                                >> $buildLogPath 2>&1
-    Write-Info "===============================================================================" >> $buildLogPath 2>&1
-    Write-Info "Initializing setup container images"                                             >> $buildLogPath 2>&1
-    Write-Info "===============================================================================" >> $buildLogPath 2>&1
+    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Info "* Building setup container images"                                               >> $buildLogPath 2>&1
+    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
     Write-Info ""                                                                                >> $buildLogPath 2>&1
 
     $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
 
-    pwsh -File $buildScript -NonInteractive -setup -nobuild >> $buildLogPath 2>&1
-    ThrowOnExitCode
+    $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -setup -nobuild" -interleave -nocheck
+    Write-Output $result.stdout >> $buildLogPath
+
+    if ($result.exitcode -ne 0)
+    {
+        throw "Build setup containers failed."
+    }
 
     #--------------------------------------------------------------------------
     # Build and publish the requested node image
 
     Write-Info ""                                                                                >> $buildLogPath 2>&1
-    Write-Info "===============================================================================" >> $buildLogPath 2>&1
-    Write-Info "Building [$hostType] node image"                                                 >> $buildLogPath 2>&1
-    Write-Info "===============================================================================" >> $buildLogPath 2>&1
+    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Info "* Building [$hostType] node image"                                               >> $buildLogPath 2>&1
+    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
     Write-Info ""                                                                                >> $buildLogPath 2>&1
 
     $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
 
     # Remove any locally cached node images
 
-    $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave
+    $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave -nocheck
+    Write-Output $result.stdout >> $buildLogPath
 
     if ($result.exitcode -ne 0)
     {
-        Write-Output $result.stdout >> $buildLogPath
+        throw "Building [$hostType] node image failed."
     }
 
     # Prepare the node image for the target environment
