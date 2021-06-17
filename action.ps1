@@ -221,16 +221,17 @@ Log-DebugLine "*** 1: $buildScript"
     $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -setup -nobuild" -interleave -nocheck
 Log-DebugLine "*** 2A: result.exitcode: $result.exitcode"
 Log-DebugLine "*** 2B: result.stdout:"
-Log-DebugLine $result.stdout
+Log-DebugLine "$result.stdout"
 Log-DebugLine "*** 2C: result.stderr:"
-Log-DebugLine $result.stdout
+Log-DebugLine "$result.stdout"
 
-    Write-Output $result.stdout >> $buildLogPath
+    Write-Output "$result.stdout" >> $buildLogPath
 
     if ($result.exitcode -ne 0)
     {
         throw "Build setup containers failed."
     }
+Log-DebugLine "*** 3:"
 
     #--------------------------------------------------------------------------
     # Build and publish the requested node image
@@ -240,30 +241,37 @@ Log-DebugLine $result.stdout
     Write-Output "* Building [$hostType] node image"                                               >> $buildLogPath 2>&1
     Write-Output "*******************************************************************************" >> $buildLogPath 2>&1
     Write-Output ""                                                                                >> $buildLogPath 2>&1
-
+    
+Log-DebugLine "*** 4:"
     $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
+Log-DebugLine "*** 5: $neonImagePath"    
 
     # Remove any locally cached node images
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave -nocheck
     Write-Output $result.stdout >> $buildLogPath
+Log-DebugLine "*** 6:"    
 
     if ($result.exitcode -ne 0)
     {
         throw "Building [$hostType] node image failed."
     }
+Log-DebugLine "*** 7:"    
 
     # Prepare the node image for the target environment
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $noContainersOption $parallelismOption $publishAwsOption $publishGitHubOption $publishPublicOption" -interleave
 
+Log-DebugLine "*** 8:"    
     if ($result.exitcode -ne 0)
     {
         Write-Output $result.stdout >> $buildLogPath
     }
+Log-DebugLine "*** 9:"    
 }
 catch
 {
+Log-DebugLine "*** 10:"    
     Write-ActionException $_
     Set-ActionOutput "success" "false"
 
@@ -278,3 +286,5 @@ catch
 
     Pop-Cwd | Out-Null
 }
+
+Log-DebugLine "*** 11:"
