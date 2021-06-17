@@ -271,14 +271,16 @@ Log-DebugLine "*** 9:"
 }
 catch
 {
-    Write-ActionException $_
-$exception  = $err.Exception
-$message    = $exception.Message
-$info       = $err.InvocationInfo
-$scriptName = $info.ScriptName
-$scriptLine = $info.ScriptLineNumber
+    # Write-ActionException $_
+$err = $_
+$exception        = $err.Exception
+$scriptStackTrace = $err.ScriptStackTrace
+$message          = $exception.Message
+$info             = $err.InvocationInfo
+$scriptName       = $info.ScriptName
+$scriptLine       = $info.ScriptLineNumber
 Log-DebugLine "*** 10A: $message" 
-Log-DebugLine "*** 10B: $exception.ScriptStackTrace" 
+Log-DebugLine "*** 10B: $scriptStackTrace" 
     Set-ActionOutput "success" "false"
 
     # Discard any neonCLOUD commits and checkout master 
