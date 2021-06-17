@@ -219,7 +219,7 @@ Log-DebugLine "*** 0:"
 Log-DebugLine "*** 1: $buildScript"
 
     $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -setup -nobuild" -interleave -nocheck
-Log-DebugLine *"*** 2A: result.exitcode: " + ($result.exitcode))
+Log-DebugLine *"*** 2A: result.exitcode: " + ($result.exitcode)
 Log-DebugLine "*** 2B: result.stdout:"
 Log-DebugLine ($result.stdout)
 Log-DebugLine "*** 2C: result.stderr:"
