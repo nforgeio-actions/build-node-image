@@ -23,8 +23,9 @@ inputs:
     description: "Specifies the base image URI"
     required: true
   build-commit:
-    description: "Specifies the neonCLOUD commit to build from"
-    required: true
+    description: "Specifies the neonCLOUD commit/branch"
+    required: false
+    default: "master"
   build-log:
     description: "Specifies the build log file name"
     required: true
