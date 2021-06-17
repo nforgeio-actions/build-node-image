@@ -182,11 +182,11 @@ try
     #--------------------------------------------------------------------------
     # Build neonCLOUD (including tools) so we can use the [neon-image] tool
 
-    Write-Info ""                                                                                 > $buildLogPath 2>&1
-    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
-    Write-Info " Building neonCLOUD (with tools)"                                                >> $buildLogPath 2>&1
-    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
-    Write-Info ""                                                                                >> $buildLogPath 2>&1
+    Write-Output ""                                                                                 > $buildLogPath 2>&1
+    Write-Output "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Output " Building neonCLOUD (with tools)"                                                >> $buildLogPath 2>&1
+    Write-Output "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Output ""                                                                                >> $buildLogPath 2>&1
 
     $buildScript = [System.IO.Path]::Combine($env:NC_TOOLBIN, "neoncloud-builder.ps1")
 
@@ -208,15 +208,23 @@ try
     # Note that this works because we've checked out neonCLOUD at the same commit
     # where the containers where fully built.
 
-    Write-Info ""                                                                                >> $buildLogPath 2>&1
-    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
-    Write-Info "* Building setup container images"                                               >> $buildLogPath 2>&1
-    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
-    Write-Info ""                                                                                >> $buildLogPath 2>&1
+    Write-Output ""                                                                                >> $buildLogPath 2>&1
+    Write-Output "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Output "* Building setup container images"                                               >> $buildLogPath 2>&1
+    Write-Output "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Output ""                                                                                >> $buildLogPath 2>&1
 
+Log-DebugLine "*** 0:"
     $buildScript = [System.IO.Path]::Combine($env:NC_ROOT, "Images", "publish.ps1")
+Log-DebugLine "*** 1: $buildScript"
 
     $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -setup -nobuild" -interleave -nocheck
+Log-DebugLine "*** 2A: result.exitcode: $result.exitcode"
+Log-DebugLine "*** 2B: result.stdout:"
+Log-DebugLine $result.stdout
+Log-DebugLine "*** 2C: result.stderr:"
+Log-DebugLine $result.stdout
+
     Write-Output $result.stdout >> $buildLogPath
 
     if ($result.exitcode -ne 0)
@@ -227,11 +235,11 @@ try
     #--------------------------------------------------------------------------
     # Build and publish the requested node image
 
-    Write-Info ""                                                                                >> $buildLogPath 2>&1
-    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
-    Write-Info "* Building [$hostType] node image"                                               >> $buildLogPath 2>&1
-    Write-Info "*******************************************************************************" >> $buildLogPath 2>&1
-    Write-Info ""                                                                                >> $buildLogPath 2>&1
+    Write-Output ""                                                                                >> $buildLogPath 2>&1
+    Write-Output "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Output "* Building [$hostType] node image"                                               >> $buildLogPath 2>&1
+    Write-Output "*******************************************************************************" >> $buildLogPath 2>&1
+    Write-Output ""                                                                                >> $buildLogPath 2>&1
 
     $neonImagePath = [System.IO.Path]::Combine($env:NC_BUILD, "neon-image", "neon-image.exe")
 
