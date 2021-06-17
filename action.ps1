@@ -64,13 +64,15 @@ try
 
     $targetFolder = $env:GITHUB_WORKSPACE
 
+
+
     if ($noContainers)
     {
-        $publishOption = "--no-containers"
+        $noContainersOption = "--no-containers"
     }
     else
     {
-        $publishOption = "--publish"
+        $noContainersOption = "--publish"
     }
 
     $hostAddressOption  = ""
@@ -78,8 +80,14 @@ try
     $hostPasswordOption = ""
     $nodeAddressOption  = ""
     $nodeNameOption     = ""
+    $noContainersOption = ""
     $parallelismOption  = "--parallelism=$parallelism"
     
+    if ($noContainers)
+    {
+        $noContainersOption = "--no-containers"
+    }
+
     $publishAwsOption   = ""
 
     if ($publishAws)
@@ -227,7 +235,7 @@ try
 
     # Prepare the node image for the target environment
 
-    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $publishOption $parallelismOption $publishAwsOption $publishGitHubOption $publishPublicOption" -interleave
+    $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $noContainersOption $parallelismOption $publishAwsOption $publishGitHubOption $publishPublicOption" -interleave
 
     if ($result.exitcode -ne 0)
     {
