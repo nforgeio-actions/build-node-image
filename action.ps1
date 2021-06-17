@@ -249,7 +249,7 @@ Log-DebugLine "*** 5: $neonImagePath"
     # Remove any locally cached node images
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave -nocheck
-    Write-Output $result.stdout >> $buildLogPath
+    Write-Output ($result.stdout) >> $buildLogPath
 Log-DebugLine "*** 6:"    
 
     if ($result.exitcode -ne 0)
@@ -265,14 +265,20 @@ Log-DebugLine "*** 7:"
 Log-DebugLine "*** 8:"    
     if ($result.exitcode -ne 0)
     {
-        Write-Output $result.stdout >> $buildLogPath
+        Write-Output ($result.stdout) >> $buildLogPath
     }
 Log-DebugLine "*** 9:"    
 }
 catch
 {
-Log-DebugLine "*** 10:"    
     Write-ActionException $_
+$exception  = $err.Exception
+$message    = $exception.Message
+$info       = $err.InvocationInfo
+$scriptName = $info.ScriptName
+$scriptLine = $info.ScriptLineNumber
+Log-DebugLine "*** 10A: $message" 
+Log-DebugLine "*** 10B: $exception.ScriptStackTrace" 
     Set-ActionOutput "success" "false"
 
     # Discard any neonCLOUD commits and checkout master 
