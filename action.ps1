@@ -219,11 +219,11 @@ Log-DebugLine "*** 0:"
 Log-DebugLine "*** 1: $buildScript"
 
     $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -setup -nobuild" -interleave -nocheck
-Log-DebugLine "*** 2A: result.exitcode: $result.exitcode"
+Log-DebugLine "*** 2A: result.exitcode: " + ($result.exitcode)
 Log-DebugLine "*** 2B: result.stdout:"
-Log-DebugLine "$result.stdout"
+Log-DebugLine ($result.stdout)
 Log-DebugLine "*** 2C: result.stderr:"
-Log-DebugLine "$result.stdout"
+Log-DebugLine ($result.stderr)
 
     Write-Output "$result.stdout" >> $buildLogPath
 
@@ -293,6 +293,8 @@ Log-DebugLine "*** 10B: $scriptStackTrace"
         Invoke-CaptureStreams "git pull --quiet" | Out-Null
 
     Pop-Cwd | Out-Null
+
+    exit 1
 }
 
 Log-DebugLine "*** 11:"
