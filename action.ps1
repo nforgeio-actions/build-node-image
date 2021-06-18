@@ -192,7 +192,7 @@ try
 
     $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -tools" -interleave -nocheck
 
-    Write-Output $result.stdout >> $buildLogPath
+    Write-Output ($result.stdout) >> $buildLogPath
 
     if ($result.exitcode -ne 0)
     {
@@ -218,7 +218,7 @@ try
 
     $result = Invoke-CaptureStreams "pwsh -File $buildScript -NonInteractive -setup -nobuild" -interleave -nocheck
 
-    Write-Output "$result.stdout" >> $buildLogPath
+    Write-Output ($result.stdout) >> $buildLogPath
 
     if ($result.exitcode -ne 0)
     {
