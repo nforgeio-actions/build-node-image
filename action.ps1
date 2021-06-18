@@ -240,18 +240,22 @@ try
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare clean" -interleave -nocheck
 
+    Write-Output ($result.stdout) >> $buildLogPath
+
     if ($result.exitcode -ne 0)
     {
-        throw "Building [$hostType] node image failed."
+        throw "Building [$hostType] clean failed."
     }
 
     # Prepare the node image for the target environment
 
     $result = Invoke-CaptureStreams "$neonImagePath prepare node $hostType $targetFolder $baseImageUri $nodeAddressOption $hostAddressOption $hostAccountOption $hostPasswordOption $nodeNameOption $noContainersOption $parallelismOption $publishAwsOption $publishGitHubOption $publishPublicOption" -interleave -nocheck
+    
+    Write-Output ($result.stdout) >> $buildLogPath
 
     if ($result.exitcode -ne 0)
     {
-        Write-Output ($result.stdout) >> $buildLogPath
+        throw "Building [$hostType] node image failed."
     }
 }
 catch
