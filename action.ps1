@@ -64,8 +64,6 @@ try
 
     $targetFolder = $env:GITHUB_WORKSPACE
 
-
-
     if ($noContainers)
     {
         $noContainersOption = "--no-containers"
