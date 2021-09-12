@@ -28,8 +28,12 @@ inputs:
     default: "master"
   build-log:
     description: "Specifies the build log file name"
-    required: true
+    required: false
     default: image-build.log
+  build-node-log:
+    description: "Specifies the node image build log file name"
+    required: false
+    default: node-image-build.log
   no-containers:
     description: "Optionally disable loading of container images for action debugging"
     required: false
@@ -46,7 +50,9 @@ outputs:
   success: 
     description: "Returns 'true' on success or 'false' on failure"
   build-log:
-    description: "Returns as the local path to the build log"
+    description: "Returns as the full local path to the build log"
+  build-node-log:
+    description: "Returns as the full local path to the node build log"
 runs:
   using: node12
   main: action.js

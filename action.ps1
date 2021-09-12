@@ -32,24 +32,28 @@ Pop-Location | Out-Null
 
 # Fetch the inputs
 
-$hostType       = Get-ActionInput      "host-type"       $true
-$baseImageUri   = Get-ActionInput      "base-image-uri"  $true
-$buildCommit    = Get-ActionInput      "build-commit"    $true
-$buildLogName   = Get-ActionInput      "build-log"       $true
-$noContainers   = Get-ActionInputBool  "no-containers"   $true
-$parallelism    = Get-ActionInputInt32 "parallelism"     $true
-$publishOptions = Get-ActionInput      "publish-options" $true
+$hostType         = Get-ActionInput      "host-type"       $true
+$baseImageUri     = Get-ActionInput      "base-image-uri"  $true
+$buildCommit      = Get-ActionInput      "build-commit"    $true
+$buildLogName     = Get-ActionInput      "build-log"       $true
+$buildNodeLogName = Get-ActionInput      "build-node-log"  $true
+$noContainers     = Get-ActionInputBool  "no-containers"   $true
+$parallelism      = Get-ActionInputInt32 "parallelism"     $true
+$publishOptions   = Get-ActionInput      "publish-options" $true
 
-$publishAws     = $publishOptions.Contains("aws")
-$publishGitHub  = $publishOptions.Contains("github")
-$publishPublic  = $publishOptions.Contains("public")
+$publishAws       = $publishOptions.Contains("aws")
+$publishGitHub    = $publishOptions.Contains("github")
+$publishPublic    = $publishOptions.Contains("public")
 
-$buildLogPath   = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
+$buildLogPath     = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildLogName)
+$buildNodeLogPath = [System.IO.Path]::Combine($env:GITHUB_WORKSPACE, $buildNodeLogName)
+$buildNodeSrcPath = [System.IO.Path]::Combine($env:USERPROFILE, ".neonkube", "log", "master.log")
 
 # Initialize the outputs
 
-Set-ActionOutput "success"   "true"
-Set-ActionOutput "build-log" $buildLogPath
+Set-ActionOutput "success"        "true"
+Set-ActionOutput "build-log"      $buildLogPath
+Set-ActionOutput "build-node-log" $buildNodeLogPath
 
 # Perform the operation
 
@@ -255,11 +259,33 @@ try
     {
         throw "Building [$hostType] node image failed."
     }
+
+    # Copy the node build log to the output file.
+
+    if ([System.IO.File]::Exists($buildNodeSrcPath))
+    {
+        [System.IO.File]::Copy($buildNodeSrcPath, $buildNodeLogPath)
+    }
+    else
+    {
+        [System.IO.File]::WriteAllText($buildNodeLogPath, "*** No node log was generated ***")
+    }
 }
 catch
 {
     Write-ActionException $_
     Set-ActionOutput "success" "false"
+
+    # Copy the node build log to the output file.
+
+    if ([System.IO.File]::Exists($buildNodeSrcPath))
+    {
+        [System.IO.File]::Copy($buildNodeSrcPath, $buildNodeLogPath)
+    }
+    else
+    {
+        [System.IO.File]::WriteAllText($buildNodeLogPath, "*** No node log was generated ***")
+    }
 
     # Discard any neonCLOUD commits and checkout master 
 
