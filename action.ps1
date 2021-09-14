@@ -111,7 +111,7 @@ try
         $publishPublicOption = "--publish-public"
     }
 
-    Switch ($hostType)
+    switch ($hostType)
     {
         "wsl2"
         {
